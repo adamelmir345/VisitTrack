@@ -5,3 +5,13 @@ __pycache__/
 .DS_Store
 db.sqlite3
 .env
+visittrack_poo/billets_qr/
+visittrack_poo/billets_pdf/
+__pycache__/
+*.pyc
+env/
+visittrack_poo/billets_qr/
+visittrack_poo/billets_pdf/
+__pycache__/
+*.pyc
+env/
