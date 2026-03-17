@@ -27,3 +27,21 @@ admin.affecter_guide(guide, session)
 # ── Pointer présence ──────────────────────
 guide.pointer_presence(reservation.billet)
 print(reservation.billet)
+
+
+from generateurs import GenerateurQR, GenerateurPDF
+
+# ── Générer le QR Code ────────────────────
+gen_qr = GenerateurQR()
+chemin_qr = gen_qr.generer(
+    code=reservation.billet.code_qr,
+    nom_fichier=f"billet_{reservation.id}.png"
+)
+
+# ── Générer le PDF ────────────────────────
+gen_pdf = GenerateurPDF()
+chemin_pdf = gen_pdf.creer_billet(reservation, chemin_qr)
+
+print(f"\nFichiers generes :")
+print(f"  QR Code : {chemin_qr}")
+print(f"  PDF     : {chemin_pdf}")

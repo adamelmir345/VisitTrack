@@ -13,19 +13,19 @@ class Utilisateur:
         return f"{self.prenom} {self.nom} ({self.role})"
 
 
-# ──────────────────────────────────────────
+
 # HÉRITAGE : Touriste, Guide, Admin
-# ──────────────────────────────────────────
+
 class Touriste(Utilisateur):
     def __init__(self, nom, prenom, email, mot_de_passe):
         super().__init__(nom, prenom, email, mot_de_passe, role="touriste")
-        self.reservations = []
+        self.reservations = [] #hadi hitache chaque touriste au depart commence par list reservation vide 
 
     def reserver(self, circuit, date, nb_participants):
-        if circuit.verifier_disponibilite(nb_participants):
+        if circuit.verifier_disponibilite(nb_participants):#hna on demande lobjet cercuit bach verifi la dispo de place l un nbr de participant si faux nmchwi direct else 
             reservation = Reservation(self, circuit, date, nb_participants)
-            self.reservations.append(reservation)
-            circuit.places_disponibles -= nb_participants
+            self.reservations.append(reservation) #historique  append bach ajouter a la fin de la liste reserv
+            circuit.places_disponibles -= nb_participants # bach on garantie que le client achette pas de place mkyninch 
             print(f"Réservation confirmée : {circuit.titre} le {date}")
             return reservation
         else:
@@ -36,7 +36,7 @@ class Touriste(Utilisateur):
         if reservation in self.reservations:
             reservation.statut = "annulée"
             reservation.circuit.places_disponibles += reservation.nb_participants
-            self.reservations.remove(reservation)
+            self.reservations.remove(reservation)# pour afecer la resrv du dossier du tourist
             print(f"Réservation annulée : {reservation.circuit.titre}")
 
 
@@ -115,14 +115,14 @@ class Reservation:
 
     def __init__(self, touriste, circuit, date, nb_participants):
         Reservation._compteur += 1
-        self.id = Reservation._compteur
+        self.id = Reservation._compteur # numero de la reservation unniq 
         self.touriste = touriste
         self.circuit = circuit
         self.date = date
         self.nb_participants = nb_participants
         self.statut = "confirmée"
         self.montant_total = circuit.prix * nb_participants
-        self.billet = Billet(self)  # crée automatiquement le billet
+        self.billet = Billet(self)  # dès qu'une réservation est créée, le billet est créé automatiquement
 
     def __str__(self):
         return (f"Réservation #{self.id} | {self.circuit.titre} | "
