@@ -1,31 +1,29 @@
-# ──────────────────────────────────────────
-# CLASSE DE BASE : Utilisateur
-# ──────────────────────────────────────────
+import uuid
+import random
+
 class Utilisateur:
     def __init__(self, nom, prenom, email, mot_de_passe, role):
+        self.id = None
         self.nom = nom
         self.prenom = prenom
         self.email = email
         self.mot_de_passe = mot_de_passe
-        self.role = role  # "touriste", "guide", "admin"
+        self.role = role  
 
     def __str__(self):
         return f"{self.prenom} {self.nom} ({self.role})"
 
 
-
-# HÉRITAGE : Touriste, Guide, Admin
-
 class Touriste(Utilisateur):
     def __init__(self, nom, prenom, email, mot_de_passe):
         super().__init__(nom, prenom, email, mot_de_passe, role="touriste")
-        self.reservations = [] #hadi hitache chaque touriste au depart commence par list reservation vide 
+        self.reservations = [] 
 
     def reserver(self, circuit, date, nb_participants):
-        if circuit.verifier_disponibilite(nb_participants):#hna on demande lobjet cercuit bach verifi la dispo de place l un nbr de participant si faux nmchwi direct else 
+        if circuit.verifier_disponibilite(nb_participants):
             reservation = Reservation(self, circuit, date, nb_participants)
-            self.reservations.append(reservation) #historique  append bach ajouter a la fin de la liste reserv
-            circuit.places_disponibles -= nb_participants # bach on garantie que le client achette pas de place mkyninch 
+            self.reservations.append(reservation)
+            circuit.places_disponibles -= nb_participants
             print(f"Réservation confirmée : {circuit.titre} le {date}")
             return reservation
         else:
@@ -36,7 +34,7 @@ class Touriste(Utilisateur):
         if reservation in self.reservations:
             reservation.statut = "annulée"
             reservation.circuit.places_disponibles += reservation.nb_participants
-            self.reservations.remove(reservation)# pour afecer la resrv du dossier du tourist
+            self.reservations.remove(reservation)
             print(f"Réservation annulée : {reservation.circuit.titre}")
 
 
@@ -44,7 +42,7 @@ class Guide(Utilisateur):
     def __init__(self, nom, prenom, email, mot_de_passe, specialites):
         super().__init__(nom, prenom, email, mot_de_passe, role="guide")
         self.specialites = specialites
-        self.planning = []  # liste de sessions assignées
+        self.planning = []
 
     def pointer_presence(self, billet):
         if billet.statut_pointage == "absent":
@@ -70,15 +68,13 @@ class Admin(Utilisateur):
             print("Conflit de planning détecté !")
 
 
-# ──────────────────────────────────────────
-# CLASSE : Circuit
-# ──────────────────────────────────────────
 class Circuit:
     def __init__(self, titre, destination, duree, prix, capacite_max):
+        self.id = None
         self.titre = titre
         self.destination = destination
-        self.duree = duree               # en jours
-        self.prix = prix                 # en MAD
+        self.duree = duree               
+        self.prix = prix                
         self.capacite_max = capacite_max
         self.places_disponibles = capacite_max
         self.statut = "actif"
@@ -90,11 +86,9 @@ class Circuit:
         return f"{self.titre} → {self.destination} | {self.prix} MAD | Places : {self.places_disponibles}/{self.capacite_max}"
 
 
-# ──────────────────────────────────────────
-# CLASSE : Session (une date de visite)
-# ──────────────────────────────────────────
 class Session:
     def __init__(self, circuit, date, heure, lieu_rdv):
+        self.id = None
         self.circuit = circuit
         self.date = date
         self.heure = heure
@@ -106,49 +100,39 @@ class Session:
         return f"Session : {self.circuit.titre} | {self.date} à {self.heure} | RDV : {self.lieu_rdv}"
 
 
-# ──────────────────────────────────────────
-# CLASSE : Reservation
-# ──────────────────────────────────────────
-class Reservation:
-    import random
-    _compteur = 0
-
-    def __init__(self, touriste, circuit, date, nb_participants):
-        Reservation._compteur += 1
-        self.id = Reservation._compteur # numero de la reservation unniq 
-        self.touriste = touriste
-        self.circuit = circuit
-        self.date = date
-        self.nb_participants = nb_participants
-        self.statut = "confirmée"
-        self.montant_total = circuit.prix * nb_participants
-        self.billet = Billet(self)  # dès qu'une réservation est créée, le billet est créé automatiquement
-
-    def __str__(self):
-        return (f"Réservation #{self.id} | {self.circuit.titre} | "
-                f"{self.nb_participants} pers. | {self.montant_total} MAD | {self.statut}")
-
-
-# ──────────────────────────────────────────
-# CLASSE : Billet
-# ──────────────────────────────────────────
-import uuid
-
 class Billet:
     def __init__(self, reservation):
+        self.id = None
         self.reservation = reservation
-        self.code_qr = str(uuid.uuid4())  # code unique
+        self.code_qr = str(uuid.uuid4())
         self.statut_pointage = "absent"
 
     def __str__(self):
         return f"Billet [{self.code_qr[:8]}...] | Pointage : {self.statut_pointage}"
 
 
-# ──────────────────────────────────────────
-# CLASSE : Paiement
-# ──────────────────────────────────────────
+class Reservation:
+    _compteur = 0
+
+    def __init__(self, touriste, circuit, date, nb_participants):
+        Reservation._compteur += 1
+        self.id = Reservation._compteur 
+        self.touriste = touriste
+        self.circuit = circuit
+        self.date = date
+        self.nb_participants = nb_participants
+        self.statut = "confirmée"
+        self.montant_total = circuit.prix * nb_participants
+        self.billet = Billet(self)
+
+    def __str__(self):
+        return (f"Réservation #{self.id} | {self.circuit.titre} | "
+                f"{self.nb_participants} pers. | {self.montant_total} MAD | {self.statut}")
+
+
 class Paiement:
     def __init__(self, reservation, methode="carte"):
+        self.id = None
         self.reservation = reservation
         self.montant = reservation.montant_total
         self.methode = methode
@@ -161,3 +145,6 @@ class Paiement:
 
     def __str__(self):
         return f"Paiement {self.reference} | {self.montant} MAD | {self.statut}"
+
+
+        
