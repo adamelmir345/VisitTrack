@@ -45,7 +45,7 @@ chemin_qr = gen_qr.generer(
     nom_fichier=f"billet_{reservation.id}.png"
 )
 
-# ── Générer le PDF ────────────────────────#
+# Générer le PDF
 gen_pdf = GenerateurPDF()
 chemin_pdf = gen_pdf.creer_billet(reservation, chemin_qr)
 
@@ -53,22 +53,18 @@ print(f"\nFichiers generes :")
 print(f"  QR Code : {chemin_qr}")
 print(f"  PDF     : {chemin_pdf}")
 
-
-
-
 print("\n── TEST BASE DE DONNEES ──")
 
-# 1. Créer les tables
+# Créer les tables
 creer_tables()
 
-# 2. Sauvegarder
+# Sauvegarder
 sauvegarder_utilisateur(touriste)
 sauvegarder_circuit(circuit)
 sauvegarder_reservation(reservation)
 sauvegarder_billet(reservation.billet, reservation.id)
 sauvegarder_paiement(paiement, reservation.id)
 
-# 3. Lire
 print("\nUtilisateurs en base :")
 for u in charger_utilisateurs():
     print(dict(u))
@@ -81,13 +77,15 @@ print("\nReservations en base :")
 for r in charger_reservations():
     print(dict(r))
 
-# 4. Pointer présence
+
 pointer_billet(reservation.billet.code_qr)
 
-# 5. Modifier un circuit
+
 
 modifier_circuit(circuit.id, {"prix": 900, "statut": "actif"})
 
 print("\nCircuit apres modification :")
 for c in charger_circuits():
     print(dict(c))
+
+    

@@ -15,3 +15,5 @@ visittrack_poo/billets_pdf/
 __pycache__/
 *.pyc
 env/
+.DS_Store
+visittrack_poo/visittrack.db
