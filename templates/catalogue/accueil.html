@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block titre %}VisitTrack – Accueil{% endblock %}
+
+{% block contenu %}
+
+<!-- Hero -->
+<section style="background: linear-gradient(135deg, #1F3864, #2E75B6); color: white; padding: 80px 0;">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">
+            <i class="fas fa-map-marked-alt me-3"></i>Découvrez le Maroc
+        </h1>
+        <p class="lead mb-4">
+            Réservez vos visites touristiques en ligne, simplement et en toute sécurité.
+        </p>
+        <a href="{% url 'catalogue:liste' %}" class="btn btn-lg btn-warning fw-bold px-5">
+            <i class="fas fa-search me-2"></i>Voir tous les circuits
+        </a>
+    </div>
+</section>
+
+<!-- Circuits en vedette -->
+<section class="container my-5">
+    <h2 class="fw-bold mb-4" style="color: #1F3864;">
+        <i class="fas fa-star me-2" style="color: #C55A11;"></i>Circuits populaires
+    </h2>
+    <div class="row g-4">
+        {% for circuit in circuits %}
+        <div class="col-md-4">
+            <div class="card card-circuit h-100">
+                {% if circuit.image %}
+                    <img src="{{ circuit.image.url }}" class="card-img-top" style="height:200px; object-fit:cover;">
+                {% else %}
+                    <div style="height:200px; background: #D6E4F0; display:flex; align-items:center; justify-content:center;">
+                        <i class="fas fa-mountain fa-3x" style="color: #2E75B6;"></i>
+                    </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title fw-bold">{{ circuit.titre }}</h5>
+                    <p class="text-muted mb-1">
+                        <i class="fas fa-map-pin me-1"></i>{{ circuit.destination }}
+                    </p>
+                    <p class="text-muted mb-2">
+                        <i class="fas fa-clock me-1"></i>{{ circuit.duree }} jours
+                    </p>
+                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                        <span class="fw-bold fs-5" style="color: #C55A11;">
+                            {{ circuit.prix }} MAD
+                        </span>
+                        {% if circuit.places_disponibles > 0 %}
+                            <span class="badge badge-dispo">
+                                {{ circuit.places_disponibles }} places
+                            </span>
+                        {% else %}
+                            <span class="badge badge-complet">Complet</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-0 pb-3">
+                    <a href="{% url 'catalogue:detail' circuit.pk %}"
+                       class="btn btn-outline-primary w-100">
+                        Voir le détail
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted py-5">
+            <i class="fas fa-inbox fa-3x mb-3"></i>
+            <p>Aucun circuit disponible pour le moment.</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Avantages -->
+<section style="background: #F2F2F2;" class="py-5">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-md-4">
+                <i class="fas fa-lock fa-2x mb-3" style="color: #2E75B6;"></i>
+                <h5 class="fw-bold">Paiement sécurisé</h5>
+                <p class="text-muted">Via Stripe — vos données bancaires sont protégées.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-qrcode fa-2x mb-3" style="color: #2E75B6;"></i>
+                <h5 class="fw-bold">E-billet QR Code</h5>
+                <p class="text-muted">Reçu par email, scanné directement par le guide.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-clock fa-2x mb-3" style="color: #2E75B6;"></i>
+                <h5 class="fw-bold">Disponible 24h/24</h5>
+                <p class="text-muted">Réservez quand vous voulez, depuis n'importe où.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
